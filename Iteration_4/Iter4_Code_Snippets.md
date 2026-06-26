@@ -2,9 +2,6 @@
 
 ## 1. RF-05 Note del maestro sull'obiettivo
 
-Re-implementato come **colonna** `goals.coach_notes`, speculare a `match_results.coach_notes`
-(coerente con ADR-3-3). La tabella `goal_notes` era stata rimossa in Iter. 2 (ADR-4-1).
-
 ### 1.1 `lib/database.types.ts` colonna `coach_notes` su `goals`
 
 ```ts

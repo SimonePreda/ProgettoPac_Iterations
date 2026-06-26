@@ -1,7 +1,6 @@
 
 # **Tennis Club Bellusco  Iter. 1**
 
----
 
 ## 1. Schema database (Supabase migration)
 

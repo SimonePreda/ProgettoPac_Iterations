@@ -573,8 +573,6 @@ export function KanbanBoard({ goals, isCoach, onEdit, onDelete, onStatusChange, 
 }
 ```
 
-> Markup ripetitivo (SVG inline, classi Tailwind di stile) sintetizzato con `// …` per leggibilità. La logica partizionamento per stato, drag&drop, swipe, transizioni è riportata integralmente.
-
 ## `components/GoalForm.tsx`
 Form a 3 step: `choice` → `catalog` (UC-08) → `form`. `handlePickTemplate` istanzia un obiettivo a partire dal template (copia campi, `status='planned'`, `progress=0`). Validazione: titolo obbligatorio, scadenza non nel passato.
 

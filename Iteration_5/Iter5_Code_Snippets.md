@@ -1,6 +1,4 @@
-# Appendice Codice nuovo / modificato
-
-**Tennis Club Bellusco Iterazione 5: Percorsi di obiettivi (Skill Tree)**
+# Tennis Club Bellusco Iterazione 5**
 
 ## 1. `lib/paths/topo.ts` algoritmo esibito (funzione pura)
 
@@ -89,14 +87,6 @@ export function computePathState(
 export function isAcyclic(nodes: TopoNode[], edges: TopoEdge[]): boolean {
   return computePathState(nodes, edges, new Set()).valid;
 }
-```
-
-> **Punto d'esame.** Un solo attraversamento ricava *tre* risultati (validità,
-> layer, frontiera). `valid`/`order` vengono dall'attraversamento Kahn;
-> `unlocked`/`blockedBy` da una passata indipendente sui prerequisiti — corretta
-> anche con più componenti. Complessità **O(V + E)** tempo e spazio.
-
----
 
 ## 2. `lib/repositories/types.ts` — contratti nuovi (estratto)
 
@@ -287,11 +277,6 @@ create policy "select_student_paths" on public.student_paths
 
 ## 7. `scripts/sql/2026_paths_iteration_b.sql` RPC transazionali
 
-> **DT-2 (debito tecnico).** La FK `goals.path_node_id` qui è
-> **`ON DELETE CASCADE`** (Iter. B/C), mentre `2026_paths.sql` (Iter. A) la
-> dichiarava `ON DELETE SET NULL`. Lo stato reale del DB è CASCADE: eliminare un
-> nodo/percorso elimina i goal materializzati (richiesto da "Disattiva percorso").
-
 ```sql
 -- FK goals -> path_nodes con CASCADE (stato attuale).
 alter table public.goals drop constraint if exists goals_path_node_id_fkey;
@@ -398,22 +383,3 @@ grant  execute on function public.activate_path(uuid, uuid)              to auth
 grant  execute on function public.deactivate_path(uuid, uuid)            to authenticated;
 grant  execute on function public.save_path_graph(uuid, jsonb, jsonb)    to authenticated;
 ```
-
-## 9. Integrazione UI (descrizione)
-
-- **`app/student/PlayerView.tsx`**  un solo caricamento per la tab "Il mio
-  percorso" (`goalRepo.listByStudent` per i liberi, `studentPathRepo.listActiveByStudent`,
-  `pathRepo.getGraph`, `goalRepo.listByStudentPath`). Da nodi+archi+goal calcola
-  `computePathState`; con la frontiera `unlocked` costruisce **sia il Kanban**
-  (obiettivi liberi **+ solo i nodi sbloccati**) **sia l'albero** (tutti i nodi).
-  Le azioni sul nodo (`changeStatus`, `setProgress`) chiamano `triggerRefresh()`
-  → ricarica → ricalcolo Kahn.
-- **`components/PathTreeView.tsx`**  riceve i nodi con `layer` (riga) e lo stato
-  visivo (bloccato / disponibile / in corso / completato). Al ricalcolo, il
-  **diff** tra la frontiera precedente e la nuova marca i nodi appena sbloccati
-  con la classe **`.animate-unlock`** I connettori prerequisito→nodo
-  sono SVG misurati sul DOM reale.
-- **`components/PathEditor.tsx`**  editor a form: si aggiungono nodi (dal catalogo
-  o custom) e per ciascuno si scelgono i prerequisiti via chip. `isAcyclic` valida
-  in tempo reale; se compare un ciclo il salvataggio è bloccato. Quando il grafo è
-  valido, l'anteprima auto-layout usa lo **stesso `layer`** della vista allievo.

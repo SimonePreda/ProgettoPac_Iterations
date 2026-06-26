@@ -1,7 +1,5 @@
 # Tennis Club Bellusco  Iterazione 3
 
-Tema Iter. 3: **Agonismo · Dashboard & Statistiche · Finalizzazione PWA**.
-
 ## 1. Agonismo (risultati partite)
 
 ### 1.1 `lib/repositories/types.ts` contratto `IMatchRepository` 

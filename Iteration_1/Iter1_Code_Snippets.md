@@ -1,26 +1,5 @@
-# Iterazione 1 — Frammenti di codice aggiunti / modificati
 
-> **Tennis Club Bellusco — Iter. 1: Fondamenta auth + approval workflow**
->
-> Questo documento elenca i frammenti di codice realmente prodotti durante l'Iterazione 1.
-> Per ogni file: scopo, frammenti rilevanti, casi d'uso coperti.
-> Lo schema DB è il punto di partenza di tutto: trigger + RLS + tabelle.
-> Tutti i percorsi sono relativi alla radice del progetto.
-
----
-
-## Indice
-
-1. [Schema database (Supabase migration)](#1-schema-database-supabase-migration)
-2. [Wrapper Supabase — 3 modalità di accesso](#2-wrapper-supabase--3-modalità-di-accesso)
-3. [Proxy Next.js 16 (ex middleware.ts)](#3-proxy-nextjs-16-ex-middlewarets)
-4. [Route handler `/auth/callback`](#4-route-handler-authcallback)
-5. [`AuthContext` — cuore dell'iterazione](#5-authcontext--cuore-delliterazione)
-6. [`LoginPage` — 4 modalità in un componente](#6-loginpage--4-modalità-in-un-componente)
-7. [`ResetPasswordPage`](#7-resetpasswordpage)
-8. [`AppRouter` + `PendingApprovalScreen`](#8-approuter--pendingapprovalscreen)
-9. [Layout root + PWA + Service Worker](#9-layout-root--pwa--service-worker)
-10. [Security headers (`next.config.ts`)](#10-security-headers-nextconfigts)
+> **Tennis Club Bellusco  Iter. 1: Fondamenta auth + approval workflow**
 
 ---
 
@@ -129,7 +108,7 @@ create policy "profiles_update"
 
 ---
 
-## 2. Wrapper Supabase — 3 modalità di accesso
+## 2. Wrapper Supabase 3 modalità di accesso
 
 Next.js 16 con SSR richiede 3 client diversi: browser, server (Server Components / Route Handlers) e middleware/proxy. Sono incapsulati in 3 file dedicati.
 
@@ -346,7 +325,7 @@ export async function GET(request: Request) {
 
 ---
 
-## 5. `AuthContext` — cuore dell'iterazione
+## 5. `AuthContext` cuore dell'iterazione
 
 **File:** `contexts/AuthContext.tsx`
 **Casi d'uso coperti:** UC-01, UC-02, UC-03 (con approval check), UC-05 (refreshProfile)
@@ -566,7 +545,7 @@ const resendSignupOtp = async (email: string) => {
 
 ---
 
-## 6. `LoginPage` — 4 modalità in un componente
+## 6. `LoginPage` 4 modalità in un componente
 
 **File:** `app/login/LoginPage.tsx`
 **Casi d'uso coperti:** UC-01, UC-02, UC-03, UC-04
@@ -746,7 +725,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 **Casi d'uso coperti:** UC-05 (schermata pending), routing per ruolo (parte di UC-03)
 **Scopo:** decision tree che sceglie la vista in base allo stato del contesto auth.
 
-### 8.1 `AppRouter` — albero decisionale
+### 8.1 `AppRouter` albero decisionale
 
 ```typescript
 function AppRouter() {
@@ -953,29 +932,3 @@ export default nextConfig;
 
 ---
 
-## Mappa: File ↔ Casi d'Uso
-
-| File | UC-01 | UC-02 | UC-03 | UC-04 | UC-05 | UC-06 |
-|---|---|---|---|---|---|---|
-| `scripts/sql/2026_initial_schema.sql` | ✅ | ✅ | ✅ | — | ✅ | ✅ |
-| `lib/supabase/client.ts` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `lib/supabase/server.ts` | — | ✅ | — | ✅ | — | — |
-| `lib/supabase/middleware.ts` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `proxy.ts` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `app/auth/callback/route.ts` | — | ✅ | — | ✅ | — | — |
-| `contexts/AuthContext.tsx` | ✅ | ✅ | ✅ | — | ✅ | — |
-| `app/login/LoginPage.tsx` | ✅ | ✅ | ✅ | ✅ | — | — |
-| `app/reset-password/page.tsx` | — | — | — | ✅ | — | — |
-| `app/page.tsx` (AppRouter + PendingApprovalScreen) | — | — | ✅ | — | ✅ | — |
-| `app/layout.tsx` | — | — | — | — | — | — |
-| `next.config.ts` | — | — | — | — | — | — |
-
-> **Legenda:** ✅ = il file implementa direttamente quel UC. UC-06 (Approva allievo) è coperto a livello DB (RLS) e ha richiesto un componente UI lato maestro che verrà documentato insieme al cruscotto maestro nelle iterazioni successive.
-
----
-
-## Note finali
-
-- **No Repository Pattern in Iter. 1:** `AuthContext` parla direttamente con `supabase-js`. Il refactor verso `lib/repositories/` è pianificato per le iterazioni successive (vedi roadmap).
-- **No test in Iter. 1:** la cartella `__tests__` e i file di configurazione Vitest sono pianificati come parte della consegna Iter. 1 ma non sono ancora presenti nel codice attuale. Vanno aggiunti prima della consegna formale (vedi documento riassuntivo, sezione 5).
-- **No integrazione MatchFit:** ADR-0-6 confermato, demandato a iterazioni successive.
